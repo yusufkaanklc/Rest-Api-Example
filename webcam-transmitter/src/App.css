@@ -1,0 +1,41 @@
+.App {
+  background-color: rgb(26, 26, 26);
+  height: 100vh;
+}
+h1 {
+  text-align: center;
+  padding: 20px 0;
+  margin: 0;
+  color: white;
+}
+.webcam-box {
+  width: 100%;
+  display: flex;
+  height: auto;
+  justify-content: center;
+  overflow: hidden;
+}
+.webcam {
+  width: 33.3%;
+}
+.button-box {
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+button {
+  background-color: transparent;
+  padding: 1em;
+  border: 1px solid rgb(133, 132, 132);
+  border-radius: 5px;
+  color: white;
+  transition: ease 0.3s;
+}
+button:hover {
+  transition: ease 0.3s;
+  border: 1px solid rgb(255, 255, 255);
+  box-shadow: 0 0 30px white;
+  background-color: white;
+  color: black;
+}
