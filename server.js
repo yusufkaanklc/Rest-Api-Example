@@ -9,9 +9,8 @@ const port = 3001;
 const uploadPath = path.join(__dirname, "uploads");
 
 app.use(cors());
-app.use(bodyParser.json({ limit: "10mb" })); // Boyut limitini ayarlayın
+app.use(bodyParser.json({ limit: "10mb" }));
 
-// Dosya yolu kontrolü
 if (!fs.existsSync(uploadPath)) {
   fs.mkdirSync(uploadPath);
 }
@@ -24,10 +23,9 @@ app.post("/upload", (req, res) => {
   }
 
   const base64Data = image.replace(/^data:image\/jpeg;base64,/, "");
-  const fileName = "uploaded_image.jpg";
-  const filePath = path.join(uploadPath, fileName);
+  const uniqueFileName = generateUniqueFileName();
+  const filePath = path.join(uploadPath, uniqueFileName);
 
-  // Base64 formatındaki veriyi dosyaya yaz
   fs.writeFile(filePath, base64Data, "base64", (err) => {
     if (err) {
       console.error("Error writing file:", err);
@@ -40,10 +38,16 @@ app.post("/upload", (req, res) => {
 });
 
 app.get("/get-image", (req, res) => {
-  const fileName = "uploaded_image.jpg";
+  const files = fs.readdirSync(uploadPath);
+
+  if (files.length === 0) {
+    return res.status(404).json({ error: "No uploaded images found." });
+  }
+
+  // İlk dosyayı al ve istemciye gönder
+  const fileName = files[0];
   const filePath = path.join(uploadPath, fileName);
 
-  // Resmi oku ve istemciye gönder
   fs.readFile(filePath, "base64", (err, data) => {
     if (err) {
       console.error("Error reading file:", err);
@@ -53,6 +57,13 @@ app.get("/get-image", (req, res) => {
     res.send(`data:image/jpeg;base64,${data}`);
   });
 });
+
+function generateUniqueFileName() {
+  // Rastgele bir string oluştur
+  const randomString = Math.random().toString(36).substring(2, 15);
+  const timestamp = new Date().getTime();
+  return `uploaded_image_${randomString}_${timestamp}.jpg`;
+}
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
